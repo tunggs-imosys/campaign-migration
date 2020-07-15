@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df46df04a2819364e99c9f7a4cf4ca0f, type: 3}
+  m_Name: OnSceneReadyToShow.Latch
+  m_EditorClassIdentifier: 
+  CountdownStart: 2
+  CurrentCountdown: 2
+  OnConditionMet: {fileID: 11400000, guid: 250595ed73c05844993f0f62c8464a08, type: 2}
