@@ -27,11 +27,11 @@ namespace Utils
       return source;
     }
 
-    public static ResolveUnityWebRequest Resolve(this UnityWebRequest source,
-      string nameForResolver = "WebRequest Resolver") =>
-      new GameObject().SetName(nameForResolver)
-        .AddComponent<ResolveUnityWebRequest>()
-        .SetRequest(source);
+    // public static ResolveUnityWebRequest Resolve(this UnityWebRequest source,
+    //   string nameForResolver = "WebRequest Resolver") =>
+    //   new GameObject().SetName(nameForResolver)
+    //     .AddComponent<ResolveUnityWebRequest>()
+    //     .SetRequest(source);
 
     public static Vector3 To(this Vector3 source, Vector3 target) =>
       target - source;
