@@ -144,9 +144,6 @@ namespace Utils
 
     public static float GetPreferredHeight(this TMP_Text source) =>
       LayoutUtility.GetPreferredHeight(source.rectTransform);
-
-    public static string GetPath(this UnityEngine.Object source) =>
-      AssetDatabase.GetAssetPath(source);
   }
 
   [Serializable]
