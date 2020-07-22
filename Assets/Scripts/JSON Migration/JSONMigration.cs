@@ -15,22 +15,24 @@ public class JSONMigration : MonoBehaviour
   public UnityEventString OnParseError = new UnityEventString();
   public UnityEvent OnParseSuccess = new UnityEvent();
   public UnityEvent OnSaveSuccess = new UnityEvent();
-  JObject _campaign = null;
+  public string BulletSpawnerQuery = string.Empty;
+  public Dictionary<string, JObject> files
+    = new Dictionary<string, JObject>();
 
   public void BrowseForFile() => FileBrowser.ShowLoadDialog(LoadCampaign,
     delegate { },
     false,
-    false,
+    true,
     string.Empty,
-    "Select campaign file");
+    "Select campaign files");
 
   void LoadCampaign(string[] paths)
   {
     try
     {
-      _campaign = JObject.Parse(File.ReadAllText(paths[0]));
-      _campaign
-        .SelectTokens("$.diffs[*].waves[*].planes[*].bulletSpawnerDatas[*]")
+      files = paths.ToDictionary(Path.GetFileName,
+        p => File.ReadAllText(p).PassTo(JObject.Parse));
+      files.Values.SelectMany(o => o.SelectTokens(BulletSpawnerQuery))
         .Cast<JObject>()
         .ForEach(s =>
         {
@@ -45,13 +47,14 @@ public class JSONMigration : MonoBehaviour
   }
 
   public void SaveConvertedFile() => FileBrowser.ShowSaveDialog(paths =>
-  {
-    File.WriteAllText(paths[0], _campaign.ToString());
-    OnSaveSuccess.Invoke();
-  },
+    {
+      files.ForEach(p => File.WriteAllText($"{paths[0]}/{p.Key}",
+        p.Value.ToString()));
+      OnSaveSuccess.Invoke();
+    },
     OnSaveSuccess.Invoke,
-    false,
+    true,
     false,
     string.Empty,
-    "Save campaign file");
+    "Save campaign files");
 }
