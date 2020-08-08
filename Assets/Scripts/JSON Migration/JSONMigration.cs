@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 using Newtonsoft.Json.Linq;
-using UnityEditor;
+using Utils.Json;
 using System.Linq;
 using System.IO;
 using UnityEngine.Events;
@@ -37,10 +37,16 @@ public class JSONMigration : MonoBehaviour
         .ForEach(s =>
         {
           var delay = s["delay"].Value<float>();
-          if (s.ContainsKey("InUse")) s["InUse"] = delay != -10;
-          else s.Add("InUse", delay != -10);
+          s.EnsureProperty("InUse", delay != -10);
           s["delay"] = delay == -10 ? 0 : delay;
         });
+      files.Values.SelectMany(o => o.SelectTokens("$.diffs[*]"))
+        .Cast<JObject>()
+        .ForEach(d => d.SelectTokens("waves[*].planes[*]").Cast<JObject>()
+          .ForEach(p => p.EnsureProperty("ID",
+            d.SelectToken($"enemies[{p["info"].Value<int>()}]")
+              .As<JObject>()
+              ["id"])));
       OnParseSuccess.Invoke();
     }
     catch (Exception e) { OnParseError.Invoke($"Parse Error"); }

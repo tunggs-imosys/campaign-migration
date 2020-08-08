@@ -925,7 +925,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   BulletSpawnerQuery: $.diffs[*].waves[*].planes[*].bulletSpawnerDatas[*]
-  filePaths: []
 --- !u!4 &1796290099
 Transform:
   m_ObjectHideFlags: 0

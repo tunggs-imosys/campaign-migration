@@ -12,7 +12,8 @@ namespace Utils
     public static R CastTo<R>(this IConvertible source) =>
       (R)Convert.ChangeType(source, typeof(R));
 
-    public static R As<R>(this System.Object source) => (R)source;
+    public static R As<R>(this System.Object source) where R : class =>
+      source as R;
 
     public static bool HasContent(this string source) =>
       !String.IsNullOrWhiteSpace(source);
