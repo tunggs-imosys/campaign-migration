@@ -46,9 +46,7 @@ public class JSONMigration : MonoBehaviour
           .ForEach(p =>
           {
             var waveInfoIndex = p["info"].Value<int>();
-            var matchingEnemies = d.SelectTokens("enemies[*]").Cast<JObject>()
-              .Where(e => e["id"].Value<int>() == waveInfoIndex);
-            var id = matchingEnemies.Any() ?
+            var id = d.SelectTokens("enemies[*]").Count() > waveInfoIndex ?
               d.SelectToken($"enemies[{waveInfoIndex}]")
                 .As<JObject>()["id"]
                 .Value<int>() :
