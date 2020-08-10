@@ -43,13 +43,25 @@ public class JSONMigration : MonoBehaviour
       files.Values.SelectMany(o => o.SelectTokens("$.diffs[*]"))
         .Cast<JObject>()
         .ForEach(d => d.SelectTokens("waves[*].planes[*]").Cast<JObject>()
-          .ForEach(p => p.EnsureProperty("ID",
-            d.SelectToken($"enemies[{p["info"].Value<int>()}]")
-              .As<JObject>()
-              ["id"])));
+          .ForEach(p =>
+          {
+            var waveInfoIndex = p["info"].Value<int>();
+            var matchingEnemies = d.SelectTokens("enemies[*]").Cast<JObject>()
+              .Where(e => e["id"].Value<int>() == waveInfoIndex);
+            var id = matchingEnemies.Any() ?
+              d.SelectToken($"enemies[{waveInfoIndex}]")
+                .As<JObject>()["id"]
+                .Value<int>() :
+              -1;
+            p.EnsureProperty("ID", id);
+          }));
       OnParseSuccess.Invoke();
     }
-    catch (Exception e) { OnParseError.Invoke($"Parse Error"); }
+    catch (Exception e)
+    {
+      Debug.Log(e.Message);
+      OnParseError.Invoke($"Parse Error");
+    }
   }
 
   public void SaveConvertedFile() => FileBrowser.ShowSaveDialog(paths =>
