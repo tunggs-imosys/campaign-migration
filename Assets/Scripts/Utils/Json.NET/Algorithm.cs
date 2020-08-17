@@ -9,9 +9,10 @@ namespace Utils.Json
   {
     public static JObject EnsureProperty(this JObject source,
       string key,
-      JToken value)
+      JToken value,
+      bool overrideValue = true)
     {
-      if (source.ContainsKey(key)) source[key] = value;
+      if (source.ContainsKey(key)) { if (overrideValue) source[key] = value; }
       else source.Add(new JProperty(key, value));
       return source;
     }

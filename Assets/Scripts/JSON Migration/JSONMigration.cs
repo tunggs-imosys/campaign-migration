@@ -53,6 +53,11 @@ public class JSONMigration : MonoBehaviour
               -1;
             p.EnsureProperty("ID", id);
           }));
+      files.Values.ForEach(r =>
+      {
+        r.EnsureProperty("HPMultiplier", 0, false);
+        r.EnsureProperty("ATKMultiplier", 0, false);
+      });
       OnParseSuccess.Invoke();
     }
     catch (Exception e)
