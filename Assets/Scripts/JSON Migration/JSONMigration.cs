@@ -55,8 +55,20 @@ public class JSONMigration : MonoBehaviour
           }));
       files.Values.ForEach(r =>
       {
-        r.EnsureProperty("HPMultiplier", 0, false);
-        r.EnsureProperty("ATKMultiplier", 0, false);
+        var HPMultiplier = r.ContainsKey("HPMultiplier") ?
+          r["HPMultiplier"] :
+          0f;
+        var ATKMultiplier = r.ContainsKey("ATKMultiplier") ?
+          r["ATKMultiplier"] :
+          0f;
+        r.SelectTokens("$.diffs[*]").Cast<JObject>()
+          .ForEach(d =>
+          {
+            d.EnsureProperty("HPMultiplier", HPMultiplier);
+            d.EnsureProperty("ATKMultiplier", ATKMultiplier);
+          });
+        r.Remove("HPMultiplier");
+        r.Remove("ATKMultiplier");
       });
       OnParseSuccess.Invoke();
     }
