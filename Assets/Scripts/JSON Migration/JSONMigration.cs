@@ -55,17 +55,28 @@ public class JSONMigration : MonoBehaviour
           }));
       files.Values.ForEach(r =>
       {
-        var HPMultiplier = r.ContainsKey("HPMultiplier") ?
-          r["HPMultiplier"] :
-          0f;
-        var ATKMultiplier = r.ContainsKey("ATKMultiplier") ?
-          r["ATKMultiplier"] :
-          0f;
+        var HPMultiplier = !r.ContainsKey("HPMultiplier") ?
+          1f :
+          r["HPMultiplier"].Value<float>() == 0f ?
+          1f :
+          r["HPMultiplier"];
+        var ATKMultiplier = !r.ContainsKey("ATKMultiplier") ?
+          1f :
+          r["ATKMultiplier"].Value<float>() == 0f ?
+          1f :
+          r["ATKMultiplier"];
         r.SelectTokens("$.diffs[*]").Cast<JObject>()
           .ForEach(d =>
           {
-            d.EnsureProperty("HPMultiplier", HPMultiplier);
-            d.EnsureProperty("ATKMultiplier", ATKMultiplier);
+            if (!d.ContainsKey("HPMultiplier"))
+              d.Add(new JProperty("HPMultiplier", HPMultiplier));
+            else if (d["HPMultiplier"].Value<float>() == 0)
+              d["HPMultiplier"] = HPMultiplier;
+            
+            if (!d.ContainsKey("ATKMultiplier"))
+              d.Add(new JProperty("ATKMultiplier", ATKMultiplier));
+            else if (d["ATKMultiplier"].Value<float>() == 0)
+              d["ATKMultiplier"] = ATKMultiplier;
           });
         r.Remove("HPMultiplier");
         r.Remove("ATKMultiplier");
