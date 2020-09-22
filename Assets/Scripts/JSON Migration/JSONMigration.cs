@@ -9,6 +9,7 @@ using System.IO;
 using UnityEngine.Events;
 using System;
 using SimpleFileBrowser;
+using MyBox;
 
 public class JSONMigration : MonoBehaviour
 {
@@ -72,7 +73,7 @@ public class JSONMigration : MonoBehaviour
               d.Add(new JProperty("HPMultiplier", HPMultiplier));
             else if (d["HPMultiplier"].Value<float>() == 0)
               d["HPMultiplier"] = HPMultiplier;
-            
+
             if (!d.ContainsKey("ATKMultiplier"))
               d.Add(new JProperty("ATKMultiplier", ATKMultiplier));
             else if (d["ATKMultiplier"].Value<float>() == 0)
@@ -81,9 +82,44 @@ public class JSONMigration : MonoBehaviour
         r.Remove("HPMultiplier");
         r.Remove("ATKMultiplier");
       });
+      files.Values.SelectMany(o => o.SelectTokens("$.diffs[*]"))
+        .Cast<JObject>()
+        .ForEach(d =>
+        {
+          var oldSets = d.SelectToken("enemies") as JArray;
+          var setDictionary = JArray.Parse("[]");
+          d.SelectTokens("waves[*].planes[*]").Cast<JObject>()
+            .Select(p => p["ID"].Value<int>())
+            .Distinct()
+            .Select(id => new JObject(
+              new JProperty("Key", id),
+              new JProperty("Value", new JObject(
+                new JProperty("Values", new JArray(oldSets
+                  .Where(set => set["id"].Value<int>() == id)
+                  .Select(set => new JObject(
+                    new JProperty("dam", set["dam"]),
+                    new JProperty("hp", set["hp"]),
+                    new JProperty("speed", set["speed"])
+                  ))))))))
+            .ForEach(setDictionary.Add);
+          d.SelectTokens("waves[*].planes[*]").Cast<JObject>().ForEach(p =>
+          {
+            var setIndex = p["info"].Value<int>();
+            setIndex = setIndex.ClampTo(0, oldSets.Count);
+            var planeID = p["ID"].Value<int>();
+            if (oldSets[setIndex]["id"].Value<int>() != planeID)
+              oldSets.FirstIndex(set => set["id"].Value<int>() == planeID);
+            var matchingSetIndices = oldSets.IndicesWhere(
+              set => set["id"].Value<int>() == planeID);
+            p["SetIndex"] = matchingSetIndices.IndexOfItem(setIndex);
+            p["info"].Parent.Remove();
+          });
+          oldSets.Parent.Remove();
+          d["StatSets"] = setDictionary;
+        });
       OnParseSuccess.Invoke();
     }
-    catch (Exception e)
+    catch (IOException e)
     {
       Debug.Log(e.Message);
       OnParseError.Invoke($"Parse Error");

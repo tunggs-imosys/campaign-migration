@@ -1,11 +1,11 @@
 {
   "dependencies": {
     "com.mybox": {
-      "version": "1.4.1",
+      "version": "https://github.com/tonygiang/MyBox.git",
       "depth": 0,
-      "source": "registry",
+      "source": "git",
       "dependencies": {},
-      "url": "https://package.openupm.com"
+      "hash": "5b2b881d5ce61c1e24fc32f3f9bba18972812a25"
     },
     "com.newtonsoft.json": {
       "version": "1.0.1",

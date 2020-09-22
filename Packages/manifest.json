@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.mybox": "1.4.1",
+    "com.mybox": "https://github.com/tonygiang/MyBox.git",
     "com.newtonsoft.json": "1.0.1",
     "com.unity.collab-proxy": "1.2.16",
     "com.unity.ide.rider": "1.1.4",

@@ -12,9 +12,6 @@ namespace Utils
     public static R CastTo<R>(this IConvertible source) =>
       (R)Convert.ChangeType(source, typeof(R));
 
-    public static R As<R>(this System.Object source) where R : class =>
-      source as R;
-
     public static bool HasContent(this string source) =>
       !String.IsNullOrWhiteSpace(source);
 
@@ -34,7 +31,7 @@ namespace Utils
       InRange(source, range.Min, range.Max);
 
     public static T ClampTo<T>(this T source, T minValue, T maxValue)
-      where T : IComparable => source.CompareTo(minValue) < 0 ? minValue :
+      where T : IComparable<T> => source.CompareTo(minValue) < 0 ? minValue :
       source.CompareTo(maxValue) > 0 ? maxValue :
       source;
 
@@ -86,13 +83,6 @@ namespace Utils
     public static R PassTo<T1, T2, T3, R>(this (T1, T2, T3) arguments,
       Func<T1, T2, T3, R> function) =>
       function(arguments.Item1, arguments.Item2, arguments.Item3);
-
-    public static IEnumerable<T> ForEach<T>(this IEnumerable<T> source,
-      Action<T> action)
-    {
-      foreach (T element in source) action(element);
-      return source;
-    }
 
     public static IEnumerable<R> SelectByIndex<T, R>(this IEnumerable<T> source,
       Func<int, R> selector)
