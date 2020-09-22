@@ -86,6 +86,7 @@ public class JSONMigration : MonoBehaviour
         .Cast<JObject>()
         .ForEach(d =>
         {
+          if (!d.HasProperty("enemies")) return;
           var oldSets = d.SelectToken("enemies") as JArray;
           var setDictionary = JArray.Parse("[]");
           d.SelectTokens("waves[*].planes[*]").Cast<JObject>()
