@@ -81,6 +81,8 @@ public class JSONMigration : MonoBehaviour
           });
         r.Remove("HPMultiplier");
         r.Remove("ATKMultiplier");
+        if (!r.ContainsKey("FormatVersion"))
+          r.AddFirst(new JProperty("FormatVersion", Application.version));
       });
       files.Values.SelectMany(o => o.SelectTokens("$.diffs[*]"))
         .Cast<JObject>()
