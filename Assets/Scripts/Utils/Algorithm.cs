@@ -20,16 +20,6 @@ namespace Utils
     public static bool OnlyCharactersIn(this string source,
       string allowedChars) => source.ToCharArray().All(allowedChars.Contains);
 
-    public static bool InRange<T>(this T source, T minValue, T maxValue)
-      where T : IComparable =>
-      source.CompareTo(minValue) >= 0 && source.CompareTo(maxValue) <= 0;
-
-    public static bool InRange(this int source, RangedInt range) =>
-      InRange(source, range.Min, range.Max);
-
-    public static bool InRange(this float source, RangedFloat range) =>
-      InRange(source, range.Min, range.Max);
-
     public static T ClampTo<T>(this T source, T minValue, T maxValue)
       where T : IComparable<T> => source.CompareTo(minValue) < 0 ? minValue :
       source.CompareTo(maxValue) > 0 ? maxValue :
