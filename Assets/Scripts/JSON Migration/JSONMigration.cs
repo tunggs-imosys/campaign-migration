@@ -52,6 +52,7 @@ public class JSONMigration : MonoBehaviour
               d.SelectToken($"enemies[{waveInfoIndex}]")
                 .As<JObject>()["id"]
                 .Value<int>() :
+              p.HasProperty("ID") ? p["ID"].Value<int>() :
               -1;
             p.EnsureProperty("ID", id);
           }));
