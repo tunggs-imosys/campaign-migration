@@ -38,7 +38,7 @@ public class JSONMigration : MonoBehaviour
         .ForEach(s =>
         {
           var delay = s["delay"].Value<float>();
-          s.EnsureProperty("InUse", delay != -10);
+          s["InUse"] = delay != -10;
           s["delay"] = delay == -10 ? 0 : delay;
         });
       files.Values.SelectMany(o => o.SelectTokens("$.diffs[*]"))
@@ -54,7 +54,7 @@ public class JSONMigration : MonoBehaviour
                 .Value<int>() :
               p.ContainsKey("ID") ? p["ID"].Value<int>() :
               -1;
-            p.EnsureProperty("ID", id);
+            p["ID"] = id;
           }));
       files.Values.ForEach(r =>
       {
